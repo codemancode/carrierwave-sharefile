@@ -2,15 +2,15 @@ require 'pathname'
 
 module CarrierWave
   module Storage
-    class TrueVault < Abstract
+    class Sharefile < Abstract
       def store!(file)
-        f = CarrierWave::Storage::TrueVault::File.new(uploader, self, uploader.store_path)
+        f = CarrierWave::Storage::Sharefile::File.new(uploader, self, uploader.store_path)
         f.store(file)
         f
       end
 
       def retrieve!(identifier)
-        f = CarrierWave::Storage::TrueVault::File.new(uploader, self, uploader.store_path(identifier))
+        f = CarrierWave::Storage::Sharefile::File.new(uploader, self, uploader.store_path(identifier))
         f.retrieve(identifier)
         f
       end
@@ -69,7 +69,7 @@ module CarrierWave
           file.content_length
         end
 
-        def truevault_attributes
+        def sharefile_attributes
           attributes
         end
 
@@ -81,10 +81,10 @@ module CarrierWave
         # [Boolean] true on success or raises error
         #
         def store(file)
-          truevault_file = file.to_file
+          sharefile_file = file.to_file
           @content_type ||= file.content_type
-          @file = client.create_blob(@uploader.truevault_vault_id, truevault_file)
-          @uploader.truevault_attributes.merge!(@file.parsed_response)
+          @file = client.create_blob(@uploader.sharefile_vault_id, sharefile_file)
+          @uploader.sharefile_attributes.merge!(@file.parsed_response)
         end
 
         ##
@@ -95,7 +95,7 @@ module CarrierWave
         # [File]
         #
         def retrieve(identifier)
-          @file = client.get_blob(@uploader.truevault_vault_id, model.blob_id)
+          @file = client.get_blob(@uploader.sharefile_vault_id, model.blob_id)
           @file ||= @file.parsed_response
         end
 
@@ -106,11 +106,11 @@ module CarrierWave
         end
 
         def client
-          CarrierWave::TrueVault::Client.new(@uploader.truevault_api_key)
+          CarrierWave::Sharefile::Client.new(@uploader.sharefile_api_key)
         end
 
         def file
-          tmp = client.get_blob(@uploader.truevault_vault_id, model.blob_id)
+          tmp = client.get_blob(@uploader.sharefile_vault_id, model.blob_id)
           @file ||= IO.binread(tmp.parsed_response)
           @file
         end

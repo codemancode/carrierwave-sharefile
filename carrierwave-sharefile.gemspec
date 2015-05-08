@@ -1,15 +1,15 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'carrierwave/truevault/version'
+require 'carrierwave/sharefile/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "carrierwave-truevault"
-  spec.version       = Carrierwave::TrueVault::VERSION
+  spec.name          = "carrierwave-sharefile"
+  spec.version       = Carrierwave::Sharefile::VERSION
   spec.authors       = ["Matthew McFarling"]
   spec.email         = ["matt@codemancode.com"]
-  spec.summary       = %q{TrueVault integration for Carrierwave.}
-  spec.description   = %q{Carrierwave storage for TrueVault.}
+  spec.summary       = %q{Sharefile integration for Carrierwave.}
+  spec.description   = %q{Carrierwave storage for sharefile.}
   spec.homepage      = "http://www.codemancode.com"
   spec.license       = "MIT"
 

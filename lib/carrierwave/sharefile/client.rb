@@ -2,7 +2,7 @@
 require 'httparty'
 
 module CarrierWave
-  module TrueVault
+  module Sharefile
     # Custom parser class for TrueVault API
     class Parser < HTTParty::Parser
       SupportedFormats.merge!({"application/octet-stream" => :octet_stream})
