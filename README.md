@@ -1,12 +1,12 @@
-# Carrierwave::TrueVault
+# Carrierwave::Sharefile
 
-This gem adds support for [TrueVault](https://truevault.com) to the CarrierWave.
+This gem adds support for [sharefile](https://sharefile.com) to the CarrierWave.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'carrierwave-truevault'
+    gem 'carrierwave-sharefile'
 
 And then execute:
 
@@ -14,7 +14,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install carrierwave-truevault
+    $ gem install carrierwave-sharefile
 
 ## Usage
 
@@ -23,23 +23,23 @@ config/initializers/carrierwave.rb ``` file.
 
 ```ruby
 CarrierWave.configure do |config|
-  config.truevault_api_key = "xxxxxx......"
-  config.truevault_vault_id = "xxxxx......"
-  config.truevault_attributes = {}
+  config.sharefile_api_key = "xxxxxx......"
+  config.sharefile_vault_id = "xxxxx......"
+  config.sharefile_attributes = {}
 end
 ```
 
-In your uploader add truevault as the storage option:
+In your uploader add sharefile as the storage option:
 
 ```ruby
 class DocumentUploader < CarrierWave::Uploader::Base
-  storage :truevault
+  storage :sharefile
 end
 ```
 
 ## Contributing
 
-1. Fork it ( https://github.com/codemancode/carrierwave-truevault/fork )
+1. Fork it ( https://github.com/codemancode/carrierwave-sharefile/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
