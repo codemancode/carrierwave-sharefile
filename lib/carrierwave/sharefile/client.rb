@@ -34,25 +34,13 @@ module CarrierWave
     end
 
     class Client
-      include HTTParty
+      require 'faraday'
+      require 'faraday_middleware'
       require 'json'
-      require 'base64'
+      require 'uri'
+      require 'open-uri'
+      require 'tempfile'
 
-      # debug_output
-      base_uri 'https://api.truevault.com'
-      parser Parser
-
-      def default_options_to_merge_with
-        {:basic_auth => {:username => @api_key, :password => nil}}
-      end
-
-      def hash_to_base64_json(hash = {})
-        Base64.encode64(hash.to_json)
-      end
-
-      # api_key         should be a valid TrueVault API key
-      # account_id      should be a valid TrueVault account ID
-      # api_version     should be a valid API version (ex 'v1')
       def initialize(api_key, api_version = 'v1')
         @api_key = api_key
         @api_ver = api_version
@@ -61,59 +49,63 @@ module CarrierWave
         end
       end
 
-      ####################################################
-      ### JSON (structured text data store) API Methods
-      ####################################################
+      def get_document
 
-      # vault_id        should be a valid vault ID
-      # document_id     should be a valid document ID
-      # document_data   should be a Ruby Hash. Method will convert it to JSON and base64 encode as required
-      def create_document(vault_id, document_data, options = {})
-        options.merge!(default_options_to_merge_with)
-        options[:body] = {:document => hash_to_base64_json(document_data)}
-        self.class.post("/#{@api_ver}/vaults/#{vault_id}/documents", options)
       end
 
-      def get_document(vault_id, document_id, options = {})
-        options.merge!(default_options_to_merge_with)
-        self.class.get("/#{@api_ver}/vaults/#{vault_id}/documents/#{document_id}", options)
+      def store_document(store_path, file)
+        folder = get_item_by_path(store_path)
+        upload_config = upload_file_to_folder(folder)
+        res = upload_media(upload_config.body['ChunkUri'], remote_file)
       end
 
-      def delete_document(vault_id, document_id, options = {})
-        options.merge!(default_options_to_merge_with)
-        self.class.delete("/#{@api_ver}/vaults/#{vault_id}/documents/#{document_id}", options)
+      private
+
+      def upload_media(url, tmpfile)
+        newline = "\r\n"
+        filename = File.basename(tmpfile.path)
+        boundary = "ClientTouchReceive----------#{Time.now.usec}"
+           
+        uri = URI.parse(url)
+         
+        post_body = []
+        post_body << "--#{boundary}#{newline}"
+        post_body << "Content-Disposition: form-data; name=\"File1\"; filename=\"#{filename}\"#{newline}"
+        post_body << "Content-Type: application/octet-stream#{newline}"
+        post_body << "#{newline}"
+        post_body << File.read(tmpfile.path)
+        post_body << "#{newline}--#{boundary}--#{newline}"
+         
+        request = Net::HTTP::Post.new(uri.request_uri)
+        request.body = post_body.join
+        request["Content-Type"] = "multipart/form-data, boundary=#{boundary}"
+        request['Content-Length'] = request.body().length
+       
+        http = Net::HTTP.new uri.host, uri.port
+        http.use_ssl = true
+        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+         
+        response = http.request request
+        return {:response => response, :id => filename}
       end
 
-      def update_document(vault_id, document_id, document_data, options = {})
-        options.merge!(default_options_to_merge_with)
-        options[:body] = {:document => hash_to_base64_json(document_data)}
-        self.class.put("/#{@api_ver}/vaults/#{vault_id}/documents/#{document_id}", options)
+      def upload_file_to_folder(folder)
+        headers = {"Authorization" => "Bearer #{@access_token}"}
+        body = {:method => 'standard', :fileName => 'testitout', :title => 'test upload', :details => 'test description'}
+        response = connection.post "sf/v3/Items(#{folder.body['Id']})/Upload", body, headers
       end
 
-      #####################################
-      ### BLOB (binary file) API Methods
-      #####################################
-
-      def create_blob(vault_id, file, options = {:headers => {"Content-Type"=>"application/octet-stream"}})
-        options.merge!(default_options_to_merge_with)
-        options[:body] = file.read
-        self.class.post("/#{@api_ver}/vaults/#{vault_id}/blobs", options)
+      def get_item_by_path(path = '/')
+        headers = {"Authorization" => "Bearer #{@access_token}"}
+        response = connection.get "sf/v3/Items/ByPath?path=#{path}", {}, headers
       end
 
-      def replace_blob(vault_id, blob_id, file, options = {:headers => {"Content-Type"=>"application/octet-stream"}})
-        options.merge!(default_options_to_merge_with)
-        options[:body] = file.read
-        self.class.put("/#{@api_ver}/vaults/#{vault_id}/blobs/#{blob_id}", options)
-      end
-
-      def delete_blob(vault_id, blob_id, options = {})
-        options.merge!(default_options_to_merge_with)
-        self.class.delete("/#{@api_ver}/vaults/#{vault_id}/blobs/#{blob_id}", options)
-      end
-
-      def get_blob(vault_id, blob_id, options = {})
-        options.merge!(default_options_to_merge_with)
-        self.class.get("/#{@api_ver}/vaults/#{vault_id}/blobs/#{blob_id}", options)
+      def connection(endpoint = "sf-api")
+        Faraday.new(:url => "https://#{@subdomain}.#{endpoint}.com/") do |faraday|
+          faraday.request  :url_encoded             # form-encode POST params
+          faraday.use FaradayMiddleware::ParseJson
+          faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
+        end
       end
 
     end

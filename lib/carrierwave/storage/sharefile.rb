@@ -83,7 +83,7 @@ module CarrierWave
         def store(file)
           sharefile_file = file.to_file
           @content_type ||= file.content_type
-          @file = client.create_blob(@uploader.sharefile_vault_id, sharefile_file)
+          @file = client.store_document(.......)
           @uploader.sharefile_attributes.merge!(@file.parsed_response)
         end
 
@@ -95,7 +95,7 @@ module CarrierWave
         # [File]
         #
         def retrieve(identifier)
-          @file = client.get_blob(@uploader.sharefile_vault_id, model.blob_id)
+          @file = client.get_document(.....)
           @file ||= @file.parsed_response
         end
 
@@ -110,7 +110,7 @@ module CarrierWave
         end
 
         def file
-          tmp = client.get_blob(@uploader.sharefile_vault_id, model.blob_id)
+          tmp = client.get_document(.....)
           @file ||= IO.binread(tmp.parsed_response)
           @file
         end

@@ -4,9 +4,10 @@ require 'carrierwave/storage/sharefile'
 require "carrierwave/sharefile/version"
 
 class CarrierWave::Uploader::Base
-  add_config :sharefile_api_key
-  add_config :sharefile_vault_id
-  add_config :sharefile_attributes
+  add_config :sharefile_client_id
+  add_config :sharefile_client_secret
+  add_config :sharefile_username
+  add_config :sharefile_password
 
   configure do |config|
     config.storage_engines[:sharefile] = 'CarrierWave::Storage::Sharefile'
