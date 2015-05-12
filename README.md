@@ -23,9 +23,10 @@ config/initializers/carrierwave.rb ``` file.
 
 ```ruby
 CarrierWave.configure do |config|
-  config.sharefile_api_key = "xxxxxx......"
-  config.sharefile_vault_id = "xxxxx......"
-  config.sharefile_attributes = {}
+  config.sharefile_client_id = ''
+  config.sharefile_client_secret = ''
+  config.sharefile_username = ''
+  config.sharefile_password = ''
 end
 ```
 
