@@ -1,6 +1,3 @@
-# Code extracted from https://github.com/marks/truevault.rb
-require 'httparty'
-
 module CarrierWave
   module Sharefile
     # Custom parser class for TrueVault API
