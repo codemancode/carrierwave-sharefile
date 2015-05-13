@@ -29,6 +29,7 @@ module CarrierWave
           :username => @username,
           :password => @password
         }
+        puts params.inspect
         response = connection("sharefile").post 'oauth/token', params
         @access_token = response.body['access_token']
         @refresh_token = response.body['refresh_token']
