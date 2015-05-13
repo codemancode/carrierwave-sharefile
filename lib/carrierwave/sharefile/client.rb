@@ -45,7 +45,7 @@ module CarrierWave
       def store_document(store_path, file)
         folder = get_item_by_path(store_path)
         upload_config = upload_file_to_folder(folder)
-        res = upload_media(upload_config.body['ChunkUri'], file.file)
+        res = upload_media(upload_config.body['ChunkUri'], file)
       end
 
       private
