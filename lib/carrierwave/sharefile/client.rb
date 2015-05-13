@@ -1,35 +1,5 @@
 module CarrierWave
   module Sharefile
-    # Custom parser class for TrueVault API
-    class Parser < HTTParty::Parser
-      SupportedFormats.merge!({"application/octet-stream" => :octet_stream})
-
-      def parse
-        case format
-          when :html
-            body
-          when :json
-            JSON.parse(body)
-          when :octet_stream
-            # TODO find a better way of doing this
-            # The issue is that no matter what it gets frmo TV
-            # the ContentType is always octet_stream
-            begin
-              JSON.parse(Base64.decode64(body))
-            rescue JSON::ParserError
-              file = Tempfile.new('blob')
-              file.binmode
-              file.write(body)
-              file.rewind
-              file
-            end
-          else
-            body
-        end
-      end
-
-    end
-
     class Client
       require 'faraday'
       require 'faraday_middleware'
