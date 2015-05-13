@@ -48,6 +48,10 @@ module CarrierWave
         def filename
           Pathname.new(path).basename.to_s
         end
+
+        def url
+          @client.get_download_link(@path)
+        end
         ##
         # Lookup value for file content-type header
         #

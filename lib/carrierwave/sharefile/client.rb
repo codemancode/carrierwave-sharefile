@@ -42,6 +42,16 @@ module CarrierWave
         response = get_item_by_id(identifier)
       end
 
+      def get_download_link(path)
+        headers = {"Authorization" => "Bearer #{@access_token}"}
+        res = get_document(path)
+        id = res.body["Id"]
+        response = connection.get "sf/v3/Items(#{id})/Download", {}, headers
+        if response.headers['location']
+          return response.headers['location']
+        end
+      end
+
       def store_document(store_path, file)
         puts "store_path #{store_path}"
         folder = get_item_by_path('/Client Portal')
