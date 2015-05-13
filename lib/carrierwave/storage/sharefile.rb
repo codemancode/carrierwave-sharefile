@@ -106,8 +106,8 @@ module CarrierWave
           sharefile_file = file.to_file
           @content_type ||= file.content_type
           @file = @client.store_document(@path, sharefile_file)
-          puts @file.inspect
-          @uploader.sharefile_attributes.merge!(@file.parsed_response)
+          # puts @file.inspect
+          # @uploader.sharefile_attributes.merge!(@file.parsed_response)
         end
 
         ##
