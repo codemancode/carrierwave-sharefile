@@ -4,13 +4,13 @@ module CarrierWave
   module Storage
     class Sharefile < Abstract
       def store!(file)
-        f = CarrierWave::Storage::Sharefile::File.new(uploader, uploader.store_path, client)
+        f = CarrierWave::Storage::Sharefile::File.new(uploader, config, uploader.store_path, client)
         f.store(file)
         f
       end
 
       def retrieve!(identifier)
-        f = CarrierWave::Storage::Sharefile::File.new(uploader, uploader.store_path(identifier), client)
+        f = CarrierWave::Storage::Sharefile::File.new(uploader, config, uploader.store_path(identifier), client)
         f.retrieve(identifier)
         f
       end
@@ -22,12 +22,25 @@ module CarrierWave
                                            config[:sharefile_password])
       end
 
+      private
+
+      def config
+        @config ||= {}
+
+        @config[:sharefile_client_id] ||= uploader.sharefile_client_id
+        @config[:sharefile_client_secret] ||= uploader.sharefile_client_secret
+        @config[:sharefile_username] ||= uploader.sharefile_username
+        @config[:sharefile_password] ||= uploader.sharefile_password
+
+        @config
+      end
+
       class File
         include CarrierWave::Utilities::Uri
         attr_reader :path
 
-        def initialize(uploader, path, client)
-          @uploader, @path, @client = uploader, path, client
+        def initialize(uploader, config, path, client)
+          @uploader, @config, @path, @client = uploader, config, path, client
         end
 
         def filename
