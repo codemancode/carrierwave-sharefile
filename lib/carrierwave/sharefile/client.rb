@@ -1,3 +1,5 @@
+require 'faraday'
+
 module CarrierWave
   module Sharefile
     class Client
