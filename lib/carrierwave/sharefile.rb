@@ -8,6 +8,7 @@ class CarrierWave::Uploader::Base
   add_config :sharefile_client_secret
   add_config :sharefile_username
   add_config :sharefile_password
+  add_config :sharefile_subdomain
 
   configure do |config|
     config.storage_engines[:sharefile] = 'CarrierWave::Storage::Sharefile'
