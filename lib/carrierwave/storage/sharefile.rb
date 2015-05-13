@@ -70,10 +70,6 @@ module CarrierWave
           @content_type = new_content_type
         end
 
-        def initialize(uploader, base, path)
-          @uploader, @base, @path = uploader, base, path
-        end
-
         ##
         # Read content of file from service
         #
