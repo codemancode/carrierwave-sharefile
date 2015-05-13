@@ -105,7 +105,8 @@ module CarrierWave
         def store(file)
           sharefile_file = file.to_file
           @content_type ||= file.content_type
-          @file = client.store_document(@path, sharefile_file)
+          @file = @client.store_document(@path, sharefile_file)
+          puts @file.inspect
           @uploader.sharefile_attributes.merge!(@file.parsed_response)
         end
 
@@ -117,7 +118,7 @@ module CarrierWave
         # [File]
         #
         def retrieve(identifier)
-          @file = client.get_document(identifier)
+          @file = @client.get_document(identifier)
           @file ||= @file.parsed_response
         end
 
