@@ -47,6 +47,7 @@ module CarrierWave
         res = get_item_by_path(path)
         id = res.body["Id"]
         response = connection.get "sf/v3/Items(#{id})/Download", {}, headers
+        puts response.headers.inspect
         if response.headers['location']
           return response.headers['location']
         end
