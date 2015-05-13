@@ -4,20 +4,31 @@ module CarrierWave
   module Storage
     class Sharefile < Abstract
       def store!(file)
-        f = CarrierWave::Storage::Sharefile::File.new(uploader, self, uploader.store_path)
+        f = CarrierWave::Storage::Sharefile::File.new(uploader, config, uploader.store_path, client)
         f.store(file)
         f
       end
 
       def retrieve!(identifier)
-        f = CarrierWave::Storage::Sharefile::File.new(uploader, self, uploader.store_path(identifier))
+        f = CarrierWave::Storage::Sharefile::File.new(uploader, config, uploader.store_path(identifier), client)
         f.retrieve(identifier)
         f
+      end
+
+      def client
+        CarrierWave::Sharefile::Client.new(config[:sharefile_client_id],
+                                           config[:sharefile_client_secret], 
+                                           config[:sharefile_username], 
+                                           config[:sharefile_password])
       end
 
       class File
         include CarrierWave::Utilities::Uri
         attr_reader :path
+
+        def initialize(uploader, config, path, client)
+          @uploader, @config, @path, @client = uploader, config, path, client
+        end
 
         def filename
           Pathname.new(path).basename.to_s
@@ -83,7 +94,7 @@ module CarrierWave
         def store(file)
           sharefile_file = file.to_file
           @content_type ||= file.content_type
-          @file = client.store_document(.......)
+          @file = client.store_document(@path, sharefile_file)
           @uploader.sharefile_attributes.merge!(@file.parsed_response)
         end
 
@@ -95,25 +106,23 @@ module CarrierWave
         # [File]
         #
         def retrieve(identifier)
-          @file = client.get_document(.....)
+          @file = client.get_document(identifier)
           @file ||= @file.parsed_response
         end
 
         private
 
-        def model
-          @uploader.model
-        end
+        # def model
+        #   @uploader.model
+        # end
 
-        def client
-          CarrierWave::Sharefile::Client.new(@uploader.sharefile_api_key)
-        end
+        
 
-        def file
-          tmp = client.get_document(.....)
-          @file ||= IO.binread(tmp.parsed_response)
-          @file
-        end
+        # def file
+        #   tmp = client.get_document(.....)
+        #   @file ||= IO.binread(tmp.parsed_response)
+        #   @file
+        # end
 
       end
     end

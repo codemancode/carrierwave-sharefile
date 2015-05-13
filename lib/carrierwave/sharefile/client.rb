@@ -41,16 +41,33 @@ module CarrierWave
       require 'open-uri'
       require 'tempfile'
 
-      def initialize(api_key, api_version = 'v1')
-        @api_key = api_key
-        @api_ver = api_version
+      def initialize(client_id, client_secret, username, password)
+        @client_id = client_id
+        @client_secret = client_secret
+        @username = username
+        @password = password
         instance_variables.each do |variable|
           raise ArgumentError, "#{variable} should not be nil or blank" if instance_variable_get(variable.to_sym).to_s == ""
         end
+        access_token
       end
 
-      def get_document
+      def access_token
+        params = {
+          :grant_type => :password,
+          :client_id => @client_id,
+          :client_secret => @client_secret,
+          :username => @username,
+          :password => @password
+        }
+        response = connection("sharefile").post 'oauth/token', params
+        @access_token = response.body['access_token']
+        @refresh_token = response.body['refresh_token']
+      end
 
+
+      def get_document(identifier)
+        response = get_item_by_id(identifier)
       end
 
       def store_document(store_path, file)
@@ -98,6 +115,11 @@ module CarrierWave
       def get_item_by_path(path = '/')
         headers = {"Authorization" => "Bearer #{@access_token}"}
         response = connection.get "sf/v3/Items/ByPath?path=#{path}", {}, headers
+      end
+
+      def get_item_by_id(identifier)
+        headers = {"Authorization" => "Bearer #{@access_token}"}
+        response = connection.get "sf/v3/Items/(#{identifier})?includeDeleted=false", {}, headers
       end
 
       def connection(endpoint = "sf-api")

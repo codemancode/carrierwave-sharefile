@@ -1,5 +1,5 @@
 module Carrierwave
-  module TrueVault
-    VERSION = "0.0.2"
+  module Sharefile
+    VERSION = "0.0.1"
   end
 end
