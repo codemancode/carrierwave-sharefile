@@ -44,7 +44,7 @@ module CarrierWave
 
       def get_download_link(path)
         headers = {"Authorization" => "Bearer #{@access_token}"}
-        res = get_document(path)
+        res = get_item_by_path(path)
         id = res.body["Id"]
         response = connection.get "sf/v3/Items(#{id})/Download", {}, headers
         if response.headers['location']
