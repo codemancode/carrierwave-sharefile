@@ -33,6 +33,7 @@ module CarrierWave
         response = connection("sharefile").post 'oauth/token', params
         @access_token = response.body['access_token']
         @refresh_token = response.body['refresh_token']
+        puts response.body
       end
 
 
