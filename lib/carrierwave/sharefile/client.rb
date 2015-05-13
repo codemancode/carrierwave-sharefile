@@ -10,11 +10,12 @@ module CarrierWave
       require 'open-uri'
       require 'tempfile'
 
-      def initialize(client_id, client_secret, username, password)
+      def initialize(client_id, client_secret, username, password, subdomain)
         @client_id = client_id
         @client_secret = client_secret
         @username = username
         @password = password
+        @subdomain = subdomain
         instance_variables.each do |variable|
           raise ArgumentError, "#{variable} should not be nil or blank" if instance_variable_get(variable.to_sym).to_s == ""
         end

@@ -19,7 +19,8 @@ module CarrierWave
         CarrierWave::Sharefile::Client.new(config[:sharefile_client_id],
                                            config[:sharefile_client_secret], 
                                            config[:sharefile_username], 
-                                           config[:sharefile_password])
+                                           config[:sharefile_password],
+                                           config[:sharefile_subdomain])
       end
 
       private
@@ -31,6 +32,7 @@ module CarrierWave
         @config[:sharefile_client_secret] ||= uploader.sharefile_client_secret
         @config[:sharefile_username] ||= uploader.sharefile_username
         @config[:sharefile_password] ||= uploader.sharefile_password
+        @config[:sharefile_subdomain] ||= uploader.sharefile_subdomain
 
         @config
       end
