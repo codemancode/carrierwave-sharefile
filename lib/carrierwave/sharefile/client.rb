@@ -43,7 +43,8 @@ module CarrierWave
       end
 
       def store_document(store_path, file)
-        folder = get_item_by_path(store_path)
+        puts "store_path #{store_path}"
+        folder = get_item_by_path('/Client Portal')
         upload_config = upload_file_to_folder(folder)
         puts upload_config.inspect
         res = upload_media(upload_config.body['ChunkUri'], file)
