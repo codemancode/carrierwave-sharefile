@@ -30,11 +30,9 @@ module CarrierWave
           :username => @username,
           :password => @password
         }
-        puts params.inspect
         response = connection("sharefile").post 'oauth/token', params
         @access_token = response.body['access_token']
         @refresh_token = response.body['refresh_token']
-        puts response.body
       end
 
 
@@ -44,21 +42,17 @@ module CarrierWave
 
       def get_download_link(path)
         headers = {"Authorization" => "Bearer #{@access_token}"}
-        res = get_item_by_path("/#{path}")
-        puts "-- #{res.inspect}"
+        res = get_item_by_path(path)
         id = res.body["Id"]
         response = connection.get "sf/v3/Items(#{id})/Download", {}, headers
-        puts response.inspect
         if response.headers['location']
           return response.headers['location']
         end
       end
 
-      def store_document(store_path, file)
-        puts "store_path #{store_path}"
-        folder = get_item_by_path('/Client Portal')
+      def store_document(root_folder, store_path, file)
+        folder = get_item_by_path(root_folder)
         upload_config = upload_file_to_folder(folder)
-        puts upload_config.inspect
         res = upload_media(upload_config.body['ChunkUri'], file)
       end
 

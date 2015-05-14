@@ -33,6 +33,7 @@ module CarrierWave
         @config[:sharefile_username] ||= uploader.sharefile_username
         @config[:sharefile_password] ||= uploader.sharefile_password
         @config[:sharefile_subdomain] ||= uploader.sharefile_subdomain
+        @config[:sharefile_root] ||= uploader.sharefile_root
 
         @config
       end
@@ -49,9 +50,17 @@ module CarrierWave
           Pathname.new(path).basename.to_s
         end
 
+        ##
+        # Lookup URL for the path
+        #
+        # === Returns
+        #
+        # [String] URL of the download link
+        #
         def url
           @client.get_download_link(@path)
         end
+
         ##
         # Lookup value for file content-type header
         #
@@ -109,9 +118,8 @@ module CarrierWave
         def store(file)
           sharefile_file = file.to_file
           @content_type ||= file.content_type
-          @file = @client.store_document(@path, sharefile_file)
-          # puts @file.inspect
-          # @uploader.sharefile_attributes.merge!(@file.parsed_response)
+          root_folder = @config[:sharefile_root]
+          @file = @client.store_document(root_folder, @path, sharefile_file)
         end
 
         ##
@@ -125,21 +133,6 @@ module CarrierWave
           @file = @client.get_document(identifier)
           @file ||= @file.parsed_response
         end
-
-        private
-
-        # def model
-        #   @uploader.model
-        # end
-
-        
-
-        # def file
-        #   tmp = client.get_document(.....)
-        #   @file ||= IO.binread(tmp.parsed_response)
-        #   @file
-        # end
-
       end
     end
   end
