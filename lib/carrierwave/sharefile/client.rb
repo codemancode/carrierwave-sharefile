@@ -43,6 +43,7 @@ module CarrierWave
       end
 
       def get_download_link(path)
+        puts "-- #{path}"
         headers = {"Authorization" => "Bearer #{@access_token}"}
         res = get_item_by_path(path)
         puts "-- #{res.inspect}"
