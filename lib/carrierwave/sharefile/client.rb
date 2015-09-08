@@ -60,7 +60,7 @@ module CarrierWave
 
       def upload_media(url, tmpfile)
         newline = "\r\n"
-        filename = File.basename(tmpfile.path)
+        filename = tmpfile.original_filename
         boundary = "ClientTouchReceive----------#{Time.now.usec}"
            
         uri = URI.parse(url)
