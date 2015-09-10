@@ -60,7 +60,7 @@ module CarrierWave
 
       def upload_media(url, tmpfile)
         newline = "\r\n"
-        filename = tmpfile.original_filename
+        filename = tmpfile['filename']
         boundary = "ClientTouchReceive----------#{Time.now.usec}"
            
         uri = URI.parse(url)
@@ -70,7 +70,7 @@ module CarrierWave
         post_body << "Content-Disposition: form-data; name=\"File1\"; filename=\"#{filename}\"#{newline}"
         post_body << "Content-Type: application/octet-stream#{newline}"
         post_body << "#{newline}"
-        post_body << File.read(tmpfile.tempfile)
+        post_body << File.open(tmpfile['path'], "rb")
         post_body << "#{newline}--#{boundary}--#{newline}"
          
         request = Net::HTTP::Post.new(uri.request_uri)

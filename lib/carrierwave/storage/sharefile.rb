@@ -4,6 +4,7 @@ module CarrierWave
   module Storage
     class Sharefile < Abstract
       def store!(file)
+        puts "TESTESTSETSETSETSET"
         f = CarrierWave::Storage::Sharefile::File.new(uploader, config, uploader.store_path, client)
         f.store(file)
         f
