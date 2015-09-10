@@ -116,7 +116,7 @@ module CarrierWave
         # [Boolean] true on success or raises error
         #
         def store(file)
-          sharefile_file = file.to_file
+          sharefile_file = file
           @content_type ||= file.content_type
           root_folder = @config[:sharefile_root]
           @file = @client.store_document(root_folder, @path, sharefile_file)
