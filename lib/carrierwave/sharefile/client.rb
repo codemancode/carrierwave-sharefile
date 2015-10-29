@@ -49,6 +49,16 @@ module CarrierWave
           return response.headers['location']
         end
       end
+      
+      def get_multi_download_link(path, ids)
+        headers = {"Authorization" => "Bearer #{@access_token}"}
+        res = get_item_by_path(path)
+        id = res.body["Id"]
+        response = connection.post "sf/v3/Items(#{id})/BulkDownload", {ids: ids}, headers
+        if response.headers['location']
+          return response.headers['location']
+        end
+      end
 
       def store_document(root_folder, store_path, file)
         folder = get_item_by_path(root_folder)
