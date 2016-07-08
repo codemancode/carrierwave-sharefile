@@ -109,6 +109,17 @@ module CarrierWave
         end
 
         ##
+        # Removes a file from the service
+        #
+        # === Returns
+        #
+        # [Boolean] true on success or raises error
+        #
+        def remove!(identifier)
+          @client.delete_document(identifier)
+        end
+
+        ##
         # Write file to service
         #
         # === Returns

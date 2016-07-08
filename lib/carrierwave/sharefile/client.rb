@@ -40,6 +40,10 @@ module CarrierWave
         response = get_item_by_id(identifier)
       end
 
+      def delete_document(identifier)
+        response = delete_item_by_id(identifier)
+      end
+
       def get_download_link(path)
         headers = {"Authorization" => "Bearer #{@access_token}"}
         res = get_item_by_path(path)
@@ -53,8 +57,14 @@ module CarrierWave
       def get_multi_download_link(path, ids)
         headers = {"Authorization" => "Bearer #{@access_token}"}
         res = get_item_by_path(path)
+        puts res
         id = res.body["Id"]
+        puts id
+        puts '------'
+        puts ids
         response = connection.post "sf/v3/Items(#{id})/BulkDownload", {ids: ids}, headers
+        puts '+++++++'
+        puts response.inspect
         if response.headers['location']
           return response.headers['location']
         end
@@ -110,6 +120,11 @@ module CarrierWave
       def get_item_by_id(identifier)
         headers = {"Authorization" => "Bearer #{@access_token}"}
         response = connection.get "sf/v3/Items/(#{identifier})?includeDeleted=false", {}, headers
+      end
+
+      def delete_item_by_id(identifier)
+        headers = {"Authorization" => "Bearer #{@access_token}"}
+        response = connection.get "sf/v3/Items/(#{identifier})?singleversion=false&forceSync=false", {}, headers
       end
 
       def connection(endpoint = "sf-api")
