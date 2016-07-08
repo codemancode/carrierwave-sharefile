@@ -40,8 +40,10 @@ module CarrierWave
         response = get_item_by_id(identifier)
       end
 
-      def delete_document(identifier)
-        response = delete_item_by_id(identifier)
+      def delete_document(path)
+        res = get_item_by_path(path)
+        id = res.body["Id"]
+        response = delete_item_by_id(id)
       end
 
       def get_download_link(path)

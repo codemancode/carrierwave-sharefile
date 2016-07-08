@@ -115,8 +115,8 @@ module CarrierWave
         #
         # [Boolean] true on success or raises error
         #
-        def delete(identifier)
-          @client.delete_document(identifier)
+        def delete
+          @client.delete_document(@path)
         end
 
         ##
