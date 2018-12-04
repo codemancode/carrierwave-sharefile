@@ -27,6 +27,8 @@ CarrierWave.configure do |config|
   config.sharefile_client_secret = ''
   config.sharefile_username = ''
   config.sharefile_password = ''
+  config.sharefile_subdomain = ''
+  config.sharefile_root = ''
 end
 ```
 
