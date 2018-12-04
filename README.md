@@ -1,3 +1,5 @@
+[![Gem Version](https://badge.fury.io/rb/carrierwave-sharefile.svg)](https://badge.fury.io/rb/carrierwave-sharefile)
+
 # Carrierwave::Sharefile
 
 This gem adds support for [sharefile](https://sharefile.com) to the CarrierWave.
