@@ -85,7 +85,7 @@ module CarrierWave
         filename = File.basename(tmpfile.path)
         boundary = "ClientTouchReceive----------#{Time.now.usec}"
            
-        uri = URI.parse(url)
+        uri = URI.parse(URI.encode(url.strip))
          
         post_body = []
         post_body << "--#{boundary}#{newline}"
