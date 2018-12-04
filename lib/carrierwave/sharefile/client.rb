@@ -81,11 +81,13 @@ module CarrierWave
       private
 
       def upload_media(url, tmpfile)
+        puts "********* url: #{url}"
+        puts "********* tmp: #{tmpfile}"
         newline = "\r\n"
         filename = File.basename(tmpfile.path)
         boundary = "ClientTouchReceive----------#{Time.now.usec}"
            
-        uri = URI.parse(URI.encode(url.strip))
+        uri = URI.parse(URI.encode(url))
          
         post_body = []
         post_body << "--#{boundary}#{newline}"
