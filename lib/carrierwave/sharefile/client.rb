@@ -126,7 +126,7 @@ module CarrierWave
 
       def delete_item_by_id(identifier)
         headers = {"Authorization" => "Bearer #{@access_token}"}
-        response = connection.get "sf/v3/Items/(#{identifier})?singleversion=false&forceSync=false", {}, headers
+        response = connection.delete "sf/v3/Items/(#{identifier})?singleversion=false&forceSync=false", {}, headers
       end
 
       def connection(endpoint = "sf-api")
